@@ -2,12 +2,60 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Primary Meta Tags -->
+    <title>Ultrathink - ADHD-Friendly Task Management</title>
+    <meta name="title" content="Ultrathink - ADHD-Friendly Task Management" />
+    <meta name="description" content="AI-powered task management designed for ADHD. Match tasks to your energy level, track progress with gamification, and stay motivated." />
+    <meta name="keywords" content="ADHD, task management, productivity, TickTick, energy levels, gamification, focus, executive function" />
+    <meta name="author" content="Ultrathink" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#667eea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web</title>
+    <link rel="apple-touch-icon" href="/vite.svg" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://192.168.1.87:5173/" />
+    <meta property="og:title" content="Ultrathink - ADHD-Friendly Task Management" />
+    <meta property="og:description" content="AI-powered task management designed for ADHD. Match tasks to your energy level, track progress with gamification, and stay motivated." />
+    <meta property="og:image" content="/vite.svg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="http://192.168.1.87:5173/" />
+    <meta property="twitter:title" content="Ultrathink - ADHD-Friendly Task Management" />
+    <meta property="twitter:description" content="AI-powered task management designed for ADHD. Match tasks to your energy level, track progress with gamification, and stay motivated." />
+    <meta property="twitter:image" content="/vite.svg" />
+
+    <!-- Accessibility -->
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="http://192.168.1.87:8001" />
+    <link rel="dns-prefetch" href="http://192.168.1.87:8001" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Skip to main content for keyboard navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Main React mount point -->
+    <div id="root" role="application" aria-label="Ultrathink Task Dashboard"></div>
+
+    <!-- No JavaScript fallback -->
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: sans-serif;">
+        <h1>🧠 Ultrathink</h1>
+        <p>JavaScript is required to run this application.</p>
+        <p>Please enable JavaScript in your browser settings.</p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

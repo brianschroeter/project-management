@@ -1,7 +1,11 @@
 /**
  * Ultrathink Animations
- * Smooth, delightful micro-interactions
+ * Smooth, delightful micro-interactions with accessibility support
  */
+
+/* ============================================
+   ENTRY ANIMATIONS
+   ============================================ */
 
 /* Fade in animation */
 @keyframes fadeIn {
@@ -27,7 +31,47 @@
   }
 }
 
-/* Pulse animation for new items */
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide up */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale in */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================
+   ATTENTION ANIMATIONS
+   ============================================ */
+
+/* Pulse animation for notifications */
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
@@ -60,6 +104,23 @@
   }
 }
 
+/* Wiggle animation */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-3deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+/* ============================================
+   GLOW & HIGHLIGHT ANIMATIONS
+   ============================================ */
+
 /* Glow animation */
 @keyframes glow {
   0%, 100% {
@@ -70,22 +131,37 @@
   }
 }
 
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Gradient animation for energy selector */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ============================================
+   GAMIFICATION ANIMATIONS
+   ============================================ */
+
 /* Progress ring animation */
 @keyframes progressRing {
   from {
     stroke-dashoffset: 339.292;
-  }
-}
-
-/* Confetti celebration */
-@keyframes confettiFall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
   }
 }
 
@@ -121,36 +197,36 @@
   }
 }
 
-/* Shimmer loading effect */
-@keyframes shimmer {
+/* Confetti celebration */
+@keyframes confettiFall {
   0% {
-    background-position: -1000px 0;
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
   }
   100% {
-    background-position: 1000px 0;
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
   }
 }
 
-/* Gradient animation for energy selector */
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+/* ============================================
+   UTILITY ANIMATION CLASSES
+   ============================================ */
 
-/* Utility classes */
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
 .animate-slide-in {
   animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
 }
 
 .animate-pulse {
@@ -165,11 +241,18 @@
   animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
 }
 
-/* Smooth transitions */
+/* ============================================
+   SMOOTH TRANSITIONS
+   ============================================ */
+
 .smooth-transition {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -182,7 +265,10 @@
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover effects */
+/* ============================================
+   HOVER EFFECTS
+   ============================================ */
+
 .hover-lift {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -208,7 +294,18 @@
   box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
 }
 
-/* Loading skeleton */
+.hover-brighten {
+  transition: filter 0.2s ease;
+}
+
+.hover-brighten:hover {
+  filter: brightness(1.1);
+}
+
+/* ============================================
+   LOADING SKELETON
+   ============================================ */
+
 .skeleton {
   background: linear-gradient(
     90deg,
@@ -232,7 +329,10 @@
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
-/* Stagger children animations */
+/* ============================================
+   STAGGER CHILDREN ANIMATIONS
+   ============================================ */
+
 .stagger-children > * {
   animation: fadeIn 0.3s ease-out forwards;
 }
@@ -247,3 +347,117 @@
 .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
 .stagger-children > *:nth-child(9) { animation-delay: 400ms; }
 .stagger-children > *:nth-child(10) { animation-delay: 450ms; }
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations and transitions for accessibility */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Override keyframes to simple opacity changes */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInRight {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: scale(1); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+  }
+
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(147, 51, 234, 0.3); }
+  }
+
+  @keyframes levelUp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes xpGain {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes confettiFall {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  /* Disable hover effects */
+  .hover-lift:hover {
+    transform: none;
+  }
+
+  .hover-scale:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   DARK MODE ANIMATION ADJUSTMENTS
+   ============================================ */
+
+html.dark .hover-lift:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+html.dark .hover-glow:hover {
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+}
+
+/* ============================================
+   ANIMATION PERFORMANCE OPTIMIZATION
+   ============================================ */
+
+/* Only animate properties that can be GPU-accelerated */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Remove will-change after animation completes */
+.animation-complete {
+  will-change: auto;
+}
