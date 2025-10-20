@@ -112,10 +112,17 @@ export function TaskCard({
   const openTickTickLink = async (e) => {
     e.preventDefault()
 
+    // DEBUG: Log task data to diagnose projectId issue
+    console.log('TaskCard - Full task object:', task)
+    console.log('TaskCard - task.projectId:', task.projectId)
+    console.log('TaskCard - task.id:', task.id)
+
     // Construct direct task URL with projectId
     const directTaskUrl = task.projectId
       ? `https://ticktick.com/webapp/#p/${task.projectId}/tasks/${task.id}`
       : `https://ticktick.com/webapp/#/tasks/${task.id}`
+
+    console.log('TaskCard - Constructed URL:', directTaskUrl)
 
     const newWindow = window.open(directTaskUrl, '_blank', 'noopener,noreferrer')
 

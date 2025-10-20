@@ -63,8 +63,23 @@ function Dashboard() {
   // Fetch tasks
   const { data: tasks, isLoading: tasksLoading, refetch: refetchTasks } = useQuery({
     queryKey: ['tasks'],
-    queryFn: () => axios.get(`${API_BASE}/tasks`).then(res => res.data),
+    queryFn: async () => {
+      const res = await axios.get(`${API_BASE}/tasks`, {
+        // Cache-busting: add timestamp and disable all caching
+        params: { _t: Date.now() },
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
+      // DEBUG: Log first task to diagnose projectId issue
+      console.log('App.jsx - First task from API:', res.data[0])
+      return res.data
+    },
     enabled: authStatus === 'authenticated',
+    staleTime: 0,  // Always fetch fresh data
+    gcTime: 0,  // Don't cache responses (React Query v5 renamed cacheTime to gcTime)
   })
 
   // Energy suggestions
@@ -367,7 +382,11 @@ function Dashboard() {
                   {dailyData.top_priorities.map((task, i) => (
                     <TaskCard
                       key={i}
-                      task={{...task, id: task.task_id || i}}
+                      task={{
+                        ...task,
+                        id: task.task_id || i,
+                        projectId: task.projectId || task.project_id  // Normalize snake_case to camelCase
+                      }}
                       onComplete={handleComplete}
                       isDark={isDark}
                     />
@@ -396,7 +415,11 @@ function Dashboard() {
               {suggestions.map((task) => (
                 <TaskCard
                   key={task.task_id}
-                  task={{...task, id: task.task_id}}
+                  task={{
+                    ...task,
+                    id: task.task_id,
+                    projectId: task.projectId || task.project_id  // Normalize snake_case to camelCase
+                  }}
                   onComplete={handleComplete}
                   isDark={isDark}
                 />
@@ -463,7 +486,7 @@ function Dashboard() {
                   task={{
                     ...task,
                     id: task.id || task.ticktick_task_id || i,
-                    projectId: task.projectId,  // Include projectId for proper URL generation
+                    projectId: task.projectId || task.project_id,  // Normalize snake_case to camelCase
                     title: task.title || task.task_title,
                     content: task.content,
                     first_step: task.unstuck_help?.tiny_first_step

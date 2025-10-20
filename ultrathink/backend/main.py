@@ -1,5 +1,5 @@
 """FastAPI application for Ultrathink backend"""
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, Response
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -218,8 +218,15 @@ async def list_tasks(
     energy_level: Optional[str] = None,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    response: Response = None,
 ):
     """List tasks with AI insights"""
+
+    # Prevent caching to ensure fresh projectId data
+    if response:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
 
     client = TickTickClient(user.access_token)
 
