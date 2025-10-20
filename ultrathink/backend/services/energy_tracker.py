@@ -110,6 +110,7 @@ class EnergyTracker:
                 "estimated_minutes": insight.estimated_duration_minutes,
                 "priority_score": insight.priority_score,
                 "first_step": insight.ai_breakdown.get("first_step") if insight.ai_breakdown else None,
+                "project_id": insight.project_id,  # Include projectId for proper TickTick URL generation
             }
             for insight in insights
         ]

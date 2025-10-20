@@ -1,5 +1,5 @@
 """FastAPI application for Ultrathink backend"""
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, Response
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -218,8 +218,15 @@ async def list_tasks(
     energy_level: Optional[str] = None,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
+    response: Response = None,
 ):
     """List tasks with AI insights"""
+
+    # Prevent caching to ensure fresh projectId data
+    if response:
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
 
     client = TickTickClient(user.access_token)
 
@@ -240,6 +247,7 @@ async def list_tasks(
                 "id": insight.ticktick_task_id,
                 "title": insight.task_title,
                 "content": insight.task_description,
+                "projectId": insight.project_id,  # Include projectId for proper URL generation
                 "ai_insights": {
                     "energy_level": insight.energy_level,
                     "estimated_minutes": insight.estimated_duration_minutes,
@@ -279,6 +287,17 @@ async def list_tasks(
                 "priority_score": insight.priority_score,
                 "eisenhower_quadrant": insight.eisenhower_quadrant,
             }
+
+            # Add projectId from insight if not already in task
+            if not task_data.get("projectId") and insight.project_id:
+                task_data["projectId"] = insight.project_id
+
+            # Add email metadata if available
+            if insight.email_source:
+                task_data["email_source"] = insight.email_source
+                task_data["email_link"] = insight.email_link
+                task_data["email_has_attachments"] = insight.email_has_attachments
+                task_data["email_attachment_count"] = insight.email_attachment_count
 
         enriched_tasks.append(task_data)
 
@@ -931,6 +950,66 @@ async def save_clarifying_answers(
         "message": "Answers saved successfully",
         "task_id": task_id,
         "answers": answers
+    }
+
+
+@app.post("/tasks/backfill-project-ids")
+async def backfill_project_ids(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Backfill projectId for all existing TaskInsight records
+
+    This endpoint fetches all tasks from TickTick and updates the TaskInsight
+    records with the correct projectId for each task. This is useful for tasks
+    that were analyzed before the projectId field was added.
+    """
+    client = TickTickClient(user.access_token)
+
+    # Get all task insights for this user
+    insights = db.query(TaskInsight).filter(
+        TaskInsight.user_id == user.id
+    ).all()
+
+    updated_count = 0
+    error_count = 0
+    already_has_project_id = 0
+    no_project_id_count = 0
+
+    for insight in insights:
+        # Skip if already has projectId
+        if insight.project_id:
+            already_has_project_id += 1
+            continue
+
+        try:
+            # Fetch task from TickTick to get projectId
+            task = client.get_task(insight.ticktick_task_id)
+            project_id = task.get("projectId")
+
+            if project_id:
+                insight.project_id = project_id
+                updated_count += 1
+                print(f"✓ Updated task '{insight.task_title[:50]}...' with projectId: {project_id}")
+            else:
+                no_project_id_count += 1
+                print(f"⚠ Task '{insight.task_title[:50]}...' has no projectId (might be in Inbox)")
+
+        except Exception as e:
+            error_count += 1
+            print(f"❌ Error fetching task {insight.ticktick_task_id}: {e}")
+
+    # Commit all changes
+    db.commit()
+
+    return {
+        "message": "ProjectId backfill complete",
+        "updated": updated_count,
+        "already_had_project_id": already_has_project_id,
+        "no_project_id": no_project_id_count,
+        "errors": error_count,
+        "total": len(insights)
     }
 
 

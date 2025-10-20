@@ -108,50 +108,30 @@ export function TaskCard({
     setTimeout(() => setShowToast(false), isError ? 5000 : 3000)
   }
 
-  // Open TickTick with automatic task ID copy and smart fallback
+  // Open task directly in TickTick
   const openTickTickLink = async (e) => {
     e.preventDefault()
 
-    // Always copy the task ID first (fallback if direct link fails)
-    try {
-      await navigator.clipboard.writeText(task.id)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 3000)
-    } catch (error) {
-      console.error('Failed to copy task ID:', error)
-    }
+    // DEBUG: Log task data to diagnose projectId issue
+    console.log('TaskCard - Full task object:', task)
+    console.log('TaskCard - task.projectId:', task.projectId)
+    console.log('TaskCard - task.id:', task.id)
 
-    // Try direct task link first
+    // Construct direct task URL with projectId
     const directTaskUrl = task.projectId
       ? `https://ticktick.com/webapp/#p/${task.projectId}/tasks/${task.id}`
       : `https://ticktick.com/webapp/#/tasks/${task.id}`
 
+    console.log('TaskCard - Constructed URL:', directTaskUrl)
+
     const newWindow = window.open(directTaskUrl, '_blank', 'noopener,noreferrer')
 
     if (!newWindow) {
-      showToastNotification('Popup blocked! Task ID copied - allow popups or search manually in TickTick.', true)
+      showToastNotification('Popup blocked! Please allow popups for this site.', true)
       return
     }
 
-    // Show instructions with fallback info
-    showToastNotification(
-      `Opening TickTick... If the page is blank, it's already copied - press Ctrl/Cmd+K and paste to search.`,
-      false
-    )
-
-    // Detect if direct link fails (white page) and redirect to main webapp after delay
-    setTimeout(() => {
-      try {
-        // Try to redirect the window to main webapp if it's still accessible
-        // This won't work due to cross-origin, but we can at least try
-        if (!newWindow.closed) {
-          // If window is still open, user might be seeing white page
-          // The copy-paste method is their backup
-        }
-      } catch (e) {
-        // Expected - cross-origin restrictions
-      }
-    }, 2000)
+    showToastNotification('Opening task in TickTick...', false)
   }
 
   // TickTick deep link
@@ -517,7 +497,7 @@ export function TaskCard({
             gap: '0.75rem',
             flexWrap: 'wrap'
           }}>
-            {/* TickTick link - opens webapp and copies ID */}
+            {/* TickTick link - opens task directly */}
             <button
               onClick={openTickTickLink}
               className="hover-lift smooth-transition"
@@ -534,11 +514,10 @@ export function TaskCard({
                 fontWeight: 600,
                 cursor: 'pointer'
               }}
-              title="Opens TickTick and copies task ID - paste in search (Ctrl/Cmd+K) to find your task"
+              title="Open this task in TickTick"
             >
-              <span>🔍</span>
-              <span>Find in TickTick</span>
               <ExternalLink size={16} />
+              <span>Open in TickTick</span>
             </button>
 
             {/* Copy Task ID button */}

@@ -90,6 +90,7 @@ class TaskPrioritizer:
                 "eisenhower_quadrant": insight.eisenhower_quadrant,
                 "energy_level": insight.energy_level,
                 "estimated_minutes": insight.estimated_duration_minutes,
+                "project_id": insight.project_id,  # Include projectId for proper TickTick URL generation
             }
             for insight in insights
         ]
