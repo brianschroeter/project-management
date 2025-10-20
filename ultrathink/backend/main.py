@@ -240,6 +240,7 @@ async def list_tasks(
                 "id": insight.ticktick_task_id,
                 "title": insight.task_title,
                 "content": insight.task_description,
+                "projectId": insight.project_id,  # Include projectId for proper URL generation
                 "ai_insights": {
                     "energy_level": insight.energy_level,
                     "estimated_minutes": insight.estimated_duration_minutes,
@@ -279,6 +280,17 @@ async def list_tasks(
                 "priority_score": insight.priority_score,
                 "eisenhower_quadrant": insight.eisenhower_quadrant,
             }
+
+            # Add projectId from insight if not already in task
+            if not task_data.get("projectId") and insight.project_id:
+                task_data["projectId"] = insight.project_id
+
+            # Add email metadata if available
+            if insight.email_source:
+                task_data["email_source"] = insight.email_source
+                task_data["email_link"] = insight.email_link
+                task_data["email_has_attachments"] = insight.email_has_attachments
+                task_data["email_attachment_count"] = insight.email_attachment_count
 
         enriched_tasks.append(task_data)
 
