@@ -1,5 +1,6 @@
 import { ProgressRing } from './ProgressRing'
 import { theme } from '../styles/theme'
+import { XPIcon, StreakIcon, LevelIcon, CelebrationIcon } from './icons/AppIcons'
 
 /**
  * Gamification Stats Display
@@ -27,7 +28,9 @@ export function GamificationStats({ stats, xpProgress }) {
 
       {/* XP Display */}
       <div className="xp-container hover-lift" style={{ flex: '1 1 auto', minWidth: '160px' }}>
-        <div className="xp-icon">⚡</div>
+        <div className="xp-icon">
+          <XPIcon size={28} />
+        </div>
         <div className="xp-text">
           <span className="xp-label">Experience</span>
           <span className="xp-value">{stats.xp} XP</span>
@@ -36,7 +39,9 @@ export function GamificationStats({ stats, xpProgress }) {
 
       {/* Streak Display */}
       <div className="streak-container hover-lift" style={{ flex: '1 1 auto', minWidth: '140px' }}>
-        <div className="streak-flame">🔥</div>
+        <div className="streak-flame">
+          <StreakIcon size={28} />
+        </div>
         <div className="streak-info">
           <span className="streak-label">Streak</span>
           <span className="streak-value">{stats.currentStreak}</span>
@@ -131,7 +136,9 @@ export function LevelUpModal({ level, onClose }) {
   return (
     <div className="level-up-modal" onClick={onClose}>
       <div className="level-up-content" onClick={(e) => e.stopPropagation()}>
-        <div className="level-up-icon">🎉</div>
+        <div className="level-up-icon">
+          <CelebrationIcon size={64} />
+        </div>
         <div className="level-up-title">Level Up!</div>
         <div className="level-up-subtitle">
           You've reached Level {level}

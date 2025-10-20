@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { EnergyBadge } from './EnergySelector'
 import { theme, getEnergyTheme } from '../styles/theme'
-import { ChevronDown, ChevronUp, ExternalLink, CheckCircle, Copy, Check } from 'lucide-react'
+import { ChevronDown, ChevronUp, ExternalLink, CheckCircle, Copy, Check, Search } from 'lucide-react'
 import { ClarifyingQuestions } from './ClarifyingQuestions'
+import { ClockIcon, ChartIcon, MailIcon, IdeaIcon } from './icons/AppIcons'
 
 const API_BASE = 'http://192.168.1.87:8001'
 
@@ -212,7 +213,7 @@ export function TaskCard({
                 fontSize: '0.75rem',
                 color: isDark ? theme.dark.text.secondary : theme.light.text.secondary
               }}>
-                <span>⏱️</span>
+                <ClockIcon size={14} />
                 <span>{insights.estimated_minutes}min</span>
               </div>
             )}
@@ -228,7 +229,7 @@ export function TaskCard({
                 fontSize: '0.75rem',
                 color: isDark ? theme.dark.text.secondary : theme.light.text.secondary
               }}>
-                <span>📊</span>
+                <ChartIcon size={14} />
                 <span>{Math.round(insights.priority_score)}/100</span>
               </div>
             )}
@@ -246,7 +247,7 @@ export function TaskCard({
                 fontSize: '0.75rem',
                 fontWeight: 600
               }}>
-                <span>📧</span>
+                <MailIcon size={14} />
                 <span>{task.email_source}</span>
               </div>
             )}
@@ -320,7 +321,7 @@ export function TaskCard({
             color: isDark ? theme.dark.text.primary : theme.light.text.primary,
             fontWeight: 600
           }}>
-            <span>💡</span>
+            <IdeaIcon size={16} />
             <span>This task needs clarification</span>
           </div>
           <div style={{
@@ -345,7 +346,7 @@ export function TaskCard({
           display: 'flex',
           gap: '0.5rem'
         }}>
-          <span>💡</span>
+          <IdeaIcon size={16} />
           <span>{task.first_step}</span>
         </div>
       )}
@@ -384,7 +385,7 @@ export function TaskCard({
               display: 'flex',
               gap: '0.5rem'
             }}>
-              <span>💡</span>
+              <IdeaIcon size={16} />
               <div>
                 <strong>First step:</strong> {task.first_step}
               </div>
@@ -412,7 +413,7 @@ export function TaskCard({
                 }}
                 className="hover-lift smooth-transition"
               >
-                <span>📧</span>
+                <MailIcon size={16} />
                 <span>View Original Email</span>
                 <ExternalLink size={16} />
               </a>
@@ -506,7 +507,7 @@ export function TaskCard({
                 gap: '0.5rem'
               }}
             >
-              <span>💡</span>
+              <IdeaIcon size={16} />
               <span>This task needs clarification - Answer {clarifyingData.questions?.length || 0} questions</span>
             </button>
           )}
@@ -536,7 +537,7 @@ export function TaskCard({
               }}
               title="Opens TickTick and copies task ID - paste in search (Ctrl/Cmd+K) to find your task"
             >
-              <span>🔍</span>
+              <Search size={16} />
               <span>Find in TickTick</span>
               <ExternalLink size={16} />
             </button>
@@ -586,7 +587,7 @@ export function TaskCard({
                   cursor: 'pointer'
                 }}
               >
-                <span>💡</span>
+                <IdeaIcon size={16} />
                 <span>Get AI Help to Clarify</span>
               </button>
             )}

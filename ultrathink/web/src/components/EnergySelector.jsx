@@ -1,4 +1,5 @@
 import { theme, getEnergyTheme } from '../styles/theme'
+import { EnergyIcon } from './icons/AppIcons'
 
 /**
  * Animated Energy Level Selector
@@ -66,7 +67,7 @@ export function EnergySelector({ currentEnergy, onChange, isDark = false }) {
               }
             }}
           >
-            <span style={{ fontSize: '1.25rem' }}>{energyTheme.emoji}</span>
+            <EnergyIcon level={level} size={20} />
             <span style={{ textTransform: 'capitalize' }}>{level}</span>
           </button>
         )
@@ -97,7 +98,7 @@ export function EnergyBadge({ level, isDark = false }) {
         fontWeight: 600
       }}
     >
-      <span>{energyTheme.emoji}</span>
+      <EnergyIcon level={level} size={14} />
       <span style={{ textTransform: 'capitalize' }}>{level}</span>
     </div>
   )

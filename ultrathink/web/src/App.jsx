@@ -12,6 +12,15 @@ import { Confetti } from './components/Confetti'
 import { useGamification } from './hooks/useGamification'
 import { useDarkMode } from './hooks/useDarkMode'
 import { theme } from './styles/theme'
+import {
+  BrainIcon,
+  CalendarIcon,
+  TargetIcon,
+  TasksIcon,
+  WarningIcon,
+  EmptyIcon,
+  EnergyCircle
+} from './components/icons/AppIcons'
 
 const queryClient = new QueryClient()
 const API_BASE = 'http://192.168.1.87:8001'
@@ -124,7 +133,9 @@ function Dashboard() {
   if (authStatus === 'not_authenticated') {
     return (
       <div className="auth-required">
-        <h1>🧠 Ultrathink</h1>
+        <h1 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <BrainIcon size={48} /> Ultrathink
+        </h1>
         <p>ADHD-friendly task management for TickTick</p>
         <div className="auth-instructions">
           <p>Click the button below to connect your TickTick account:</p>
@@ -212,8 +223,8 @@ function Dashboard() {
           flexWrap: 'wrap',
           gap: '1rem'
         }}>
-          <h1 style={{ margin: 0, fontSize: '2rem' }} id="dashboard-title">
-            🧠 Ultrathink Dashboard
+          <h1 style={{ margin: 0, fontSize: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }} id="dashboard-title">
+            <BrainIcon size={32} /> Ultrathink Dashboard
           </h1>
           <button
             onClick={toggleDark}
@@ -286,7 +297,7 @@ function Dashboard() {
               gap: '0.5rem',
               color: isDark ? theme.dark.text.primary : theme.light.text.primary
             }}>
-              📅 Daily Review
+              <CalendarIcon size={24} /> Daily Review
             </h2>
 
             <div className="stats-row" style={{
@@ -314,7 +325,10 @@ function Dashboard() {
                   display: 'block',
                   marginTop: '0.25rem'
                 }}>
-                  {getEnergyEmoji(dailyData.recommended_energy)} {dailyData.recommended_energy}
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <EnergyCircle level={dailyData.recommended_energy} size={20} />
+                    {dailyData.recommended_energy}
+                  </span>
                 </span>
               </div>
 
@@ -367,8 +381,13 @@ function Dashboard() {
                   fontSize: '1.25rem',
                   fontWeight: 600,
                   marginBottom: '1rem',
-                  color: isDark ? theme.dark.text.primary : theme.light.text.primary
-                }}>🎯 Top 3 Priorities</h3>
+                  color: isDark ? theme.dark.text.primary : theme.light.text.primary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  <TargetIcon size={20} /> Top 3 Priorities
+                </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {dailyData.top_priorities.map((task, i) => (
                     <TaskCard
@@ -396,7 +415,8 @@ function Dashboard() {
               gap: '0.5rem',
               color: isDark ? theme.dark.text.primary : theme.light.text.primary
             }}>
-              {getEnergyEmoji(currentEnergy)} Tasks for Your {currentEnergy} Energy
+              <EnergyCircle level={currentEnergy} size={24} />
+              Tasks for Your {currentEnergy} Energy
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {suggestions.map((task) => (
@@ -423,11 +443,13 @@ function Dashboard() {
               gap: '0.5rem',
               color: isDark ? theme.dark.text.primary : theme.light.text.primary
             }}>
-              📋 All Tasks ({tasks.length})
+              <TasksIcon size={24} /> All Tasks ({tasks.length})
             </h2>
             {tasks.length === 0 ? (
               <div className="empty-state animate-fade-in" role="status">
-                <div className="empty-state-icon" aria-hidden="true">📭</div>
+                <div className="empty-state-icon" aria-hidden="true">
+                  <EmptyIcon size={64} />
+                </div>
                 <h3 className="empty-state-title">No tasks found</h3>
                 <p className="empty-state-description">
                   You're all caught up! Create a new task in TickTick to get started.
@@ -468,9 +490,12 @@ function Dashboard() {
               fontSize: '1.5rem',
               fontWeight: 700,
               marginBottom: '1.5rem',
-              color: isDark ? theme.dark.text.primary : theme.light.text.primary
+              color: isDark ? theme.dark.text.primary : theme.light.text.primary,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}>
-              📋 Loading Tasks...
+              <TasksIcon size={24} /> Loading Tasks...
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[1, 2, 3].map((i) => (
@@ -493,7 +518,7 @@ function Dashboard() {
               gap: '0.5rem',
               color: '#f59e0b'
             }}>
-              ⚠️ Tasks Needing Attention
+              <WarningIcon size={24} /> Tasks Needing Attention
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {dailyData.stale_tasks.slice(0, 5).map((task, i) => (
