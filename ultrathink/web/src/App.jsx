@@ -117,9 +117,10 @@ function Dashboard() {
 
   if (authStatus === 'checking') {
     return (
-      <div className="loading">
-        <div className="spinner"></div>
+      <div className="loading" role="status" aria-live="polite">
+        <div className="spinner" aria-hidden="true"></div>
         <p>Checking authentication...</p>
+        <span className="sr-only">Loading application, please wait...</span>
       </div>
     )
   }
@@ -210,6 +211,7 @@ function Dashboard() {
 
       <header
         className="header"
+        role="banner"
         style={{
           padding: '2rem',
           background: isDark ? theme.dark.bg.secondary : 'white',
@@ -225,10 +227,14 @@ function Dashboard() {
           flexWrap: 'wrap',
           gap: '1rem'
         }}>
-          <h1 style={{ margin: 0, fontSize: '2rem' }}>🧠 Ultrathink Dashboard</h1>
+          <h1 style={{ margin: 0, fontSize: '2rem' }} id="dashboard-title">
+            🧠 Ultrathink Dashboard
+          </h1>
           <button
             onClick={toggleDark}
             className="hover-scale smooth-transition"
+            aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+            aria-pressed={isDark}
             style={{
               padding: '0.75rem',
               background: isDark ? theme.dark.bg.tertiary : theme.light.bg.tertiary,
@@ -241,7 +247,7 @@ function Dashboard() {
               gap: '0.5rem'
             }}
           >
-            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            {isDark ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
             <span>{isDark ? 'Light' : 'Dark'} Mode</span>
           </button>
         </div>
@@ -276,7 +282,7 @@ function Dashboard() {
         </div>
       </header>
 
-      <div className="main-content" style={{
+      <main className="main-content" id="main-content" role="main" aria-labelledby="dashboard-title" style={{
         maxWidth: '1400px',
         margin: '0 auto',
         padding: '2rem'
@@ -430,8 +436,8 @@ function Dashboard() {
 
         {/* All Tasks */}
         {!tasksLoading && tasks && (
-          <section className="all-tasks stagger-children" style={{ marginBottom: '2rem' }}>
-            <h2 style={{
+          <section className="all-tasks stagger-children" style={{ marginBottom: '2rem' }} aria-labelledby="all-tasks-heading">
+            <h2 id="all-tasks-heading" style={{
               fontSize: '1.5rem',
               fontWeight: 700,
               marginBottom: '1.5rem',
@@ -442,26 +448,59 @@ function Dashboard() {
             }}>
               📋 All Tasks ({tasks.length})
             </h2>
+            {tasks.length === 0 ? (
+              <div className="empty-state animate-fade-in" role="status">
+                <div className="empty-state-icon" aria-hidden="true">📭</div>
+                <h3 className="empty-state-title">No tasks found</h3>
+                <p className="empty-state-description">
+                  You're all caught up! Create a new task in TickTick to get started.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }} role="list">
+                  {tasks.slice(0, 10).map((task) => (
+                    <div key={task.id} role="listitem">
+                      <TaskCard
+                        task={task}
+                        onComplete={handleComplete}
+                        isDark={isDark}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {tasks.length > 10 && (
+                  <div style={{
+                    textAlign: 'center',
+                    marginTop: '1rem',
+                    fontSize: '0.875rem',
+                    color: isDark ? theme.dark.text.secondary : theme.light.text.secondary
+                  }} role="status" aria-live="polite">
+                    Showing 10 of {tasks.length} tasks
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+        )}
+
+        {/* Loading state for tasks */}
+        {tasksLoading && (
+          <section style={{ marginBottom: '2rem' }} aria-busy="true" aria-label="Loading tasks">
+            <h2 style={{
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              marginBottom: '1.5rem',
+              color: isDark ? theme.dark.text.primary : theme.light.text.primary
+            }}>
+              📋 Loading Tasks...
+            </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {tasks.slice(0, 10).map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onComplete={handleComplete}
-                  isDark={isDark}
-                />
+              {[1, 2, 3].map((i) => (
+                <div key={i} className={isDark ? 'skeleton-dark' : 'skeleton'} style={{ height: '120px' }} aria-hidden="true" />
               ))}
             </div>
-            {tasks.length > 10 && (
-              <div style={{
-                textAlign: 'center',
-                marginTop: '1rem',
-                fontSize: '0.875rem',
-                color: isDark ? theme.dark.text.secondary : theme.light.text.secondary
-              }}>
-                Showing 10 of {tasks.length} tasks
-              </div>
-            )}
+            <span className="sr-only">Loading your tasks, please wait...</span>
           </section>
         )}
 
@@ -499,11 +538,14 @@ function Dashboard() {
             </div>
           </section>
         )}
-      </div>
+      </main>
 
-      <footer className="footer">
+      <footer className="footer" role="contentinfo">
         <p>Ultrathink • ADHD-friendly task management</p>
-        <p>Use 'ultra' command in terminal for quick access</p>
+        <p>Use <code>ultra</code> command in terminal for quick access</p>
+        <p style={{ fontSize: '0.75rem', marginTop: '0.5rem', opacity: 0.7 }}>
+          Press <kbd>?</kbd> for keyboard shortcuts
+        </p>
       </footer>
     </div>
   )
