@@ -946,6 +946,66 @@ async def save_clarifying_answers(
     }
 
 
+@app.post("/tasks/backfill-project-ids")
+async def backfill_project_ids(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Backfill projectId for all existing TaskInsight records
+
+    This endpoint fetches all tasks from TickTick and updates the TaskInsight
+    records with the correct projectId for each task. This is useful for tasks
+    that were analyzed before the projectId field was added.
+    """
+    client = TickTickClient(user.access_token)
+
+    # Get all task insights for this user
+    insights = db.query(TaskInsight).filter(
+        TaskInsight.user_id == user.id
+    ).all()
+
+    updated_count = 0
+    error_count = 0
+    already_has_project_id = 0
+    no_project_id_count = 0
+
+    for insight in insights:
+        # Skip if already has projectId
+        if insight.project_id:
+            already_has_project_id += 1
+            continue
+
+        try:
+            # Fetch task from TickTick to get projectId
+            task = client.get_task(insight.ticktick_task_id)
+            project_id = task.get("projectId")
+
+            if project_id:
+                insight.project_id = project_id
+                updated_count += 1
+                print(f"✓ Updated task '{insight.task_title[:50]}...' with projectId: {project_id}")
+            else:
+                no_project_id_count += 1
+                print(f"⚠ Task '{insight.task_title[:50]}...' has no projectId (might be in Inbox)")
+
+        except Exception as e:
+            error_count += 1
+            print(f"❌ Error fetching task {insight.ticktick_task_id}: {e}")
+
+    # Commit all changes
+    db.commit()
+
+    return {
+        "message": "ProjectId backfill complete",
+        "updated": updated_count,
+        "already_had_project_id": already_has_project_id,
+        "no_project_id": no_project_id_count,
+        "errors": error_count,
+        "total": len(insights)
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host=settings.api_host, port=settings.api_port)
