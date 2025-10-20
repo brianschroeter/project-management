@@ -3,69 +3,252 @@ import { theme } from '../styles/theme'
 
 /**
  * Gamification Stats Display
- * Shows XP, level, streak in a colorful dashboard
+ * Shows XP, level, streak in a unified, organized grid
  */
-export function GamificationStats({ stats, xpProgress }) {
+export function GamificationStats({ stats, xpProgress, isDark = false }) {
   return (
     <div style={{
-      display: 'flex',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
       gap: '1rem',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      flexWrap: 'wrap'
+      width: '100%'
     }}>
-      {/* Level Display */}
-      <div className="level-container hover-lift" style={{ flex: '1 1 auto', minWidth: '140px' }}>
-        <div className="level-badge">
+      {/* Level Card */}
+      <div className="stat-card-unified hover-lift" style={{
+        padding: '1.25rem',
+        background: isDark ? theme.dark.bg.secondary : 'white',
+        borderRadius: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.3)' : '0 2px 12px rgba(0,0,0,0.08)',
+        border: `2px solid transparent`,
+        backgroundClip: 'padding-box',
+        position: 'relative'
+      }}>
+        <div style={{
+          width: '3.5rem',
+          height: '3.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: theme.gamification.level.gradient,
+          borderRadius: '0.75rem',
+          fontSize: '1.75rem',
+          fontWeight: 700,
+          color: 'white',
+          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+          flexShrink: 0
+        }}>
           {stats.level}
         </div>
-        <div className="level-info">
-          <span className="level-label">Level</span>
-          <span className="level-value">Level {stats.level}</span>
+        <div style={{ flex: 1 }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            color: isDark ? theme.dark.text.secondary : theme.light.text.secondary,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            marginBottom: '0.25rem'
+          }}>
+            Level
+          </div>
+          <div style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            color: isDark ? theme.dark.text.primary : theme.light.text.primary,
+            lineHeight: 1
+          }}>
+            Level {stats.level}
+          </div>
         </div>
       </div>
 
-      {/* XP Display */}
-      <div className="xp-container hover-lift" style={{ flex: '1 1 auto', minWidth: '160px' }}>
-        <div className="xp-icon">⚡</div>
-        <div className="xp-text">
-          <span className="xp-label">Experience</span>
-          <span className="xp-value">{stats.xp} XP</span>
-        </div>
-      </div>
-
-      {/* Streak Display */}
-      <div className="streak-container hover-lift" style={{ flex: '1 1 auto', minWidth: '140px' }}>
-        <div className="streak-flame">🔥</div>
-        <div className="streak-info">
-          <span className="streak-label">Streak</span>
-          <span className="streak-value">{stats.currentStreak}</span>
-          <span className="streak-days">days</span>
-        </div>
-      </div>
-
-      {/* Tasks Completed */}
-      <div className="stat-card hover-lift" style={{
-        flex: '1 1 auto',
-        minWidth: '120px',
-        padding: '1rem',
-        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+      {/* XP Card with Progress */}
+      <div className="stat-card-unified hover-lift" style={{
+        padding: '1.25rem',
+        background: isDark ? theme.dark.bg.secondary : 'white',
         borderRadius: '1rem',
-        color: 'white',
-        textAlign: 'center',
-        boxShadow: '0 4px 15px rgba(16, 185, 129, 0.3)'
+        boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.3)' : '0 2px 12px rgba(0,0,0,0.08)'
       }}>
-        <div style={{ fontSize: '2rem', fontWeight: 700 }}>
-          {stats.tasksCompleted}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+          <div style={{
+            width: '3.5rem',
+            height: '3.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: theme.gamification.xp.gradient,
+            borderRadius: '0.75rem',
+            fontSize: '1.75rem',
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+            flexShrink: 0
+          }}>
+            ⚡
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: isDark ? theme.dark.text.secondary : theme.light.text.secondary,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              marginBottom: '0.25rem'
+            }}>
+              Experience
+            </div>
+            <div style={{
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: isDark ? theme.dark.text.primary : theme.light.text.primary,
+              lineHeight: 1
+            }}>
+              {stats.xp} XP
+            </div>
+          </div>
         </div>
+        {/* Inline Progress Bar */}
+        <div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '0.5rem'
+          }}>
+            <span style={{
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: isDark ? theme.dark.text.muted : theme.light.text.muted
+            }}>
+              Progress to Level {xpProgress.level + 1}
+            </span>
+            <span style={{
+              fontSize: '0.75rem',
+              color: isDark ? theme.dark.text.muted : theme.light.text.muted
+            }}>
+              {Math.round(xpProgress.progress)}%
+            </span>
+          </div>
+          <div style={{
+            height: '6px',
+            background: isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0',
+            borderRadius: '9999px',
+            overflow: 'hidden'
+          }}>
+            <div
+              style={{
+                height: '100%',
+                width: `${xpProgress.progress}%`,
+                background: theme.gamification.xp.gradient,
+                transition: 'width 0.5s ease',
+                borderRadius: '9999px'
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Streak Card */}
+      <div className="stat-card-unified hover-lift" style={{
+        padding: '1.25rem',
+        background: isDark ? theme.dark.bg.secondary : 'white',
+        borderRadius: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.3)' : '0 2px 12px rgba(0,0,0,0.08)'
+      }}>
         <div style={{
-          fontSize: '0.75rem',
-          opacity: 0.9,
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          marginTop: '0.25rem'
+          width: '3.5rem',
+          height: '3.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: theme.gamification.streak.gradient,
+          borderRadius: '0.75rem',
+          fontSize: '1.75rem',
+          boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+          flexShrink: 0
         }}>
-          Tasks Done
+          🔥
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            color: isDark ? theme.dark.text.secondary : theme.light.text.secondary,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            marginBottom: '0.25rem'
+          }}>
+            Streak
+          </div>
+          <div style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            color: isDark ? theme.dark.text.primary : theme.light.text.primary,
+            lineHeight: 1,
+            display: 'flex',
+            alignItems: 'baseline',
+            gap: '0.5rem'
+          }}>
+            {stats.currentStreak}
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              color: isDark ? theme.dark.text.secondary : theme.light.text.secondary
+            }}>
+              days
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Tasks Completed Card */}
+      <div className="stat-card-unified hover-lift" style={{
+        padding: '1.25rem',
+        background: isDark ? theme.dark.bg.secondary : 'white',
+        borderRadius: '1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.3)' : '0 2px 12px rgba(0,0,0,0.08)'
+      }}>
+        <div style={{
+          width: '3.5rem',
+          height: '3.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          borderRadius: '0.75rem',
+          fontSize: '1.75rem',
+          fontWeight: 700,
+          color: 'white',
+          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+          flexShrink: 0
+        }}>
+          ✓
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            color: isDark ? theme.dark.text.secondary : theme.light.text.secondary,
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            marginBottom: '0.25rem'
+          }}>
+            Tasks Done
+          </div>
+          <div style={{
+            fontSize: '1.5rem',
+            fontWeight: 700,
+            color: isDark ? theme.dark.text.primary : theme.light.text.primary,
+            lineHeight: 1
+          }}>
+            {stats.tasksCompleted}
+          </div>
         </div>
       </div>
     </div>
@@ -74,54 +257,11 @@ export function GamificationStats({ stats, xpProgress }) {
 
 /**
  * XP Progress Bar with Level Info
+ * @deprecated - Now integrated into GamificationStats component
+ * Kept for backwards compatibility
  */
 export function XPProgressBar({ xpProgress }) {
-  return (
-    <div style={{
-      padding: '1rem',
-      background: 'white',
-      borderRadius: '0.75rem',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '0.5rem'
-      }}>
-        <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>
-          Level {xpProgress.level}
-        </span>
-        <span style={{ fontSize: '0.875rem', color: '#64748b' }}>
-          {xpProgress.currentXP} / {xpProgress.nextLevelXP} XP
-        </span>
-      </div>
-      <div style={{
-        height: '8px',
-        background: '#e2e8f0',
-        borderRadius: '9999px',
-        overflow: 'hidden'
-      }}>
-        <div
-          style={{
-            height: '100%',
-            width: `${xpProgress.progress}%`,
-            background: theme.gamification.xp.gradient,
-            transition: 'width 0.5s ease',
-            borderRadius: '9999px'
-          }}
-        />
-      </div>
-      <div style={{
-        marginTop: '0.5rem',
-        textAlign: 'center',
-        fontSize: '0.75rem',
-        color: '#94a3b8'
-      }}>
-        {Math.round(xpProgress.progress)}% to Level {xpProgress.level + 1}
-      </div>
-    </div>
-  )
+  return null
 }
 
 /**

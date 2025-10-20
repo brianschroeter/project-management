@@ -218,6 +218,7 @@ function Dashboard() {
           boxShadow: isDark ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.1)'
         }}
       >
+        {/* Title and Theme Toggle */}
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto',
@@ -225,7 +226,8 @@ function Dashboard() {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '1rem'
+          gap: '1rem',
+          marginBottom: '1.5rem'
         }}>
           <h1 style={{ margin: 0, fontSize: '2rem' }} id="dashboard-title">
             🧠 Ultrathink Dashboard
@@ -236,7 +238,7 @@ function Dashboard() {
             aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
             aria-pressed={isDark}
             style={{
-              padding: '0.75rem',
+              padding: '0.75rem 1rem',
               background: isDark ? theme.dark.bg.tertiary : theme.light.bg.tertiary,
               color: isDark ? theme.dark.text.primary : theme.light.text.primary,
               border: 'none',
@@ -244,7 +246,9 @@ function Dashboard() {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem'
+              gap: '0.5rem',
+              fontWeight: 600,
+              fontSize: '0.875rem'
             }}
           >
             {isDark ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
@@ -252,28 +256,17 @@ function Dashboard() {
           </button>
         </div>
 
-        {/* Gamification Stats and XP Progress - Side by Side */}
-        <div style={{
-          maxWidth: '1400px',
-          margin: '1.5rem auto 0',
-          display: 'grid',
-          gridTemplateColumns: '2fr 1fr',
-          gap: '1.5rem',
-          alignItems: 'start'
-        }}>
-          <div>
-            <GamificationStats
-              stats={gamification.stats}
-              xpProgress={gamification.xpProgress}
-            />
-          </div>
-          <div>
-            <XPProgressBar xpProgress={gamification.xpProgress} />
-          </div>
+        {/* Gamification Stats - Unified Grid */}
+        <div style={{ maxWidth: '1400px', margin: '0 auto 1.5rem' }}>
+          <GamificationStats
+            stats={gamification.stats}
+            xpProgress={gamification.xpProgress}
+            isDark={isDark}
+          />
         </div>
 
         {/* Energy Selector */}
-        <div style={{ maxWidth: '1400px', margin: '1.5rem auto 0' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <EnergySelector
             currentEnergy={currentEnergy}
             onChange={setCurrentEnergy}
